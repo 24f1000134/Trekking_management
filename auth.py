@@ -58,3 +58,86 @@ def register():
         username  = request.form.get('username', '').strip()
         email     = request.form.get('email', '').strip()
         full_name = request.form.get('full_name', '').strip()
+        phone     = request.form.get('phone', '').strip()
+        password  = request.form.get('password', '')
+        confirm   = request.form.get('confirm_password', '')
+
+        if not all([username, email, full_name, password, confirm]):
+            flash('All fields are required.', 'danger')
+            return render_template('auth/register.html')
+
+        if password != confirm:
+            flash('Passwords do not match.', 'danger')
+            return render_template('auth/register.html')
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'danger')
+            return render_template('auth/register.html')
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already taken.', 'danger')
+            return render_template('auth/register.html')
+
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered.', 'danger')
+            return render_template('auth/register.html')
+
+        user = User(username=username, email=email, full_name=full_name,
+                    phone=phone, role='user', is_approved=True)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        flash('Registration successful. Please log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/register.html')
+
+
+@auth_bp.route('/staff/register', methods=['GET', 'POST'])
+def staff_register():
+   
+    if request.method == 'POST':
+        username  = request.form.get('username', '').strip()
+        email     = request.form.get('email', '').strip()
+        full_name = request.form.get('full_name', '').strip()
+        phone     = request.form.get('phone', '').strip()
+        password  = request.form.get('password', '')
+        confirm   = request.form.get('confirm_password', '')
+
+        if not all([username, email, full_name, password, confirm]):
+            flash('All fields are required.', 'danger')
+            return render_template('auth/staff_register.html')
+
+        if password != confirm:
+            flash('Passwords do not match.', 'danger')
+            return render_template('auth/staff_register.html')
+
+        if len(password) < 6:
+            flash('Password must be at least 6 characters.', 'danger')
+            return render_template('auth/staff_register.html')
+
+        if User.query.filter_by(username=username).first():
+            flash('Username already taken.', 'danger')
+            return render_template('auth/staff_register.html')
+
+        if User.query.filter_by(email=email).first():
+            flash('Email already registered.', 'danger')
+            return render_template('auth/staff_register.html')
+
+        staff = User(username=username, email=email, full_name=full_name,
+                     phone=phone, role='staff', is_approved=False)
+        staff.set_password(password)
+        db.session.add(staff)
+        db.session.commit()
+        flash('Staff registration submitted.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/staff_register.html')
+
+
+@auth_bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash('You have been logged out.', 'info')
+    return redirect(url_for('auth.login'))
