@@ -1,0 +1,59 @@
+<nav class="sidebar">
+  {% if current_user.role == 'admin' %}
+    <span class="sidebar-label">Main</span>
+    <a href="{{ url_for('admin.dashboard') }}" class="nav-link {% if request.endpoint == 'admin.dashboard' %}active{% endif %}">
+      Dashboard
+    </a>
+
+    <span class="sidebar-label">Trek Management</span>
+    <a href="{{ url_for('admin.treks') }}" class="nav-link {% if 'treks' in request.endpoint %}active{% endif %}">
+       Treks
+    </a>
+    <a href="{{ url_for('admin.bookings') }}" class="nav-link {% if request.endpoint == 'admin.bookings' %}active{% endif %}">
+      All Bookings
+    </a>
+
+    <span class="sidebar-label">People</span>
+    <a href="{{ url_for('admin.staff') }}" class="nav-link {% if request.endpoint == 'admin.staff' %}active{% endif %}">
+      Staff
+    </a>
+    <a href="{{ url_for('admin.users') }}" class="nav-link {% if request.endpoint == 'admin.users' %}active{% endif %}">
+     Trekkers
+    </a>
+
+  {% elif current_user.role == 'staff' %}
+    <span class="sidebar-label">Main</span>
+    <a href="{{ url_for('staff.dashboard') }}" class="nav-link {% if request.endpoint == 'staff.dashboard' %}active{% endif %}">
+        Dashboard
+    </a>
+
+    <span class="sidebar-label">My Treks</span>
+    {% for trek in current_user.assigned_treks %}
+    <a href="{{ url_for('staff.trek_detail', trek_id=trek.id) }}"
+       class="nav-link {% if request.endpoint == 'staff.trek_detail' and request.view_args.trek_id == trek.id %}active{% endif %}"
+       style="font-size:.82rem; padding-left:1rem;">
+       {{ trek.name[:20] }}{% if trek.name|length > 20 %}…{% endif %}
+    </a>
+    {% endfor %}
+
+    <span class="sidebar-label">Account</span>
+    <a href="{{ url_for('staff.profile') }}" class="nav-link {% if request.endpoint == 'staff.profile' %}active{% endif %}">
+      My Profile
+    </a>
+
+  {% elif current_user.role == 'user' %}
+    <span class="sidebar-label">Main</span>
+    <a href="{{ url_for('user.dashboard') }}" class="nav-link {% if request.endpoint == 'user.dashboard' %}active{% endif %}">
+      Dashboard
+    </a>
+    <a href="{{ url_for('user.treks') }}" class="nav-link {% if request.endpoint == 'user.treks' %}active{% endif %}">
+      Browse Treks
+    </a>
+    <a href="{{ url_for('user.bookings') }}" class="nav-link {% if request.endpoint == 'user.bookings' %}active{% endif %}">
+      My Bookings
+    </a>
+    <a href="{{ url_for('user.profile') }}" class="nav-link {% if request.endpoint == 'user.profile' %}active{% endif %}">
+      My Profile
+    </a>
+  {% endif %}
+</nav>
