@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}TrekTheHills - Adventure Trekking Platform{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="index-page">
+  <div class="index-card">
+    <h1 class="index-title">TrekTheHills</h1>
+    <p style="font-size:.85rem; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--primary); margin-bottom:.5rem;">Adventure Trekking Platform</p>
+    <p class="index-sub">A professional platform for managing trekking adventures.</p>
+    <div class="d-flex gap-3" style="justify-content:center; margin-bottom:1.5rem;">
+      <a href="{{ url_for('auth.login') }}" class="btn btn-primary btn-lg" style="width:180px; justify-content:center;">
+        Login
+      </a>
+      <a href="{{ url_for('auth.register') }}" class="btn btn-outline btn-lg" style="width:180px; justify-content:center;">
+        Register
+      </a>
+    </div>
+    <p style="font-size:.83rem; color:var(--gray-500);">
+      Trek Staff? <a href="{{ url_for('auth.staff_register') }}">Register as Staff</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

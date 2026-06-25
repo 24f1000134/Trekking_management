@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %}Login - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+    <div class="auth-card-header">
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Sign in to your TrekTheHills account</p>
+    </div>
+
+    <div class="auth-card-body">
+      <form method="POST" action="{{ url_for('auth.login') }}">
+        <div class="form-group">
+          <label class="form-label">Username</label>
+          <input type="text" name="username" id="username" class="form-control" placeholder="Enter your username" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" name="password" id="password" class="form-control" placeholder="Enter your password" required>
+        </div>
+        <button type="submit" id="login-btn" class="btn btn-primary w-100" style="margin-top:.5rem;">
+           Sign In
+        </button>
+      </form>
+    </div>
+
+    <div class="auth-footer">
+      <p>New trekker? <a href="{{ url_for('auth.register') }}">Register here</a></p>
+      <p>Trek staff? <a href="{{ url_for('auth.staff_register') }}">Register as Staff</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
