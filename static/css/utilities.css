@@ -1,0 +1,100 @@
+/*  Design Tokens  */
+:root {
+  --primary:      #1e3a8a;
+  --primary-dark: #172554;
+  --primary-light:#dbeafe;
+  --accent:       #f59e0b;
+  --accent-dark:  #b45309;
+  --danger:       #dc2626;
+  --warning:      #d97706;
+  --success:      #059669;
+  --info:         #0284c7;
+  --dark:         #0f172a;
+  --gray-900:     #1e293b;
+  --gray-700:     #475569;
+  --gray-500:     #64748b;
+  --gray-300:     #cbd5e1;
+  --gray-100:     #f1f5f9;
+  --white:        #ffffff;
+  --sidebar-w:    240px;
+  --radius:       10px;
+  --shadow-sm:    0 1px 3px rgba(0,0,0,.08), 0 1px 2px rgba(0,0,0,.04);
+  --shadow:       0 4px 16px rgba(0,0,0,.10);
+  --shadow-lg:    0 10px 32px rgba(0,0,0,.14);
+  --transition:   .2s ease;
+}
+
+/*  Reset & Base  */
+*, *::before, *::after { box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.9375rem;
+  color: var(--gray-900);
+  background: var(--gray-100);
+  min-height: 100vh;
+  margin: 0;
+}
+
+a { color: var(--primary); text-decoration: none; }
+a:focus,
+a:hover,
+a:active,
+a:focus-visible {
+  color: var(--primary-dark);
+  outline-color: var(--primary);
+}
+
+/*  Layout  */
+.app-layout {
+  display: flex;
+  min-height: calc(100vh - 60px);
+}
+
+/*  Main Content  */
+.main-content {
+  flex: 1;
+  padding: 1.75rem 2rem;
+  overflow-x: hidden;
+}
+
+/*  Tables  */
+.table-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+.table thead th {
+  background: var(--gray-900);
+  color: var(--white);
+  font-weight: 500;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.table thead th:first-child { border-radius: var(--radius) 0 0 0; }
+.table thead th:last-child  { border-radius: 0 var(--radius) 0 0; }
+
+.table tbody td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--gray-300);
+  vertical-align: middle;
+}
+
+.table tbody tr:last-child td { border-bottom: none; }
+
+.table tbody tr:hover { background: var(--gray-100); }
+
+/*  Badges  */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25em 0.65em;
+  font-size: 0.74rem;
