@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Your Dashboard</h1>
+  </div>
+  <a href="{{ url_for('admin.add_trek') }}" class="btn btn-primary">
+      New Trek
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="bi bi-map"></i></div>
+    <div>
+      <div class="stat-value">{{ total_treks }}</div>
+      <div class="stat-label">Total Treks</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="bi bi-people"></i></div>
+    <div>
+      <div class="stat-value">{{ total_users }}</div>
+      <div class="stat-label">Trekkers</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon blue"><i class="bi bi-person-badge"></i></div>
+    <div>
+      <div class="stat-value">{{ total_staff }}</div>
+      <div class="stat-label">Staff Members</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon purple"><i class="bi bi-calendar-check"></i></div>
+    <div>
+      <div class="stat-value">{{ total_bookings }}</div>
+      <div class="stat-label">Total Bookings</div>
+    </div>
+  </div>
+  {% if pending_staff > 0 %}
+  <div class="stat-card">
+    <div class="stat-icon red"><i class="bi bi-person-exclamation"></i></div>
+    <div>
+      <div class="stat-value">{{ pending_staff }}</div>
+      <div class="stat-label">Pending Approvals</div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<div class="d-flex flex-wrap gap-3">
+  <!-- Recent Treks -->
+  <div class="card" style="flex:1; min-width:320px;">
+    <div class="card-header">
+      <h2 class="card-title"> Recent Treks</h2>
+      <a href="{{ url_for('admin.treks') }}" class="btn btn-secondary btn-sm">View All</a>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Trek</th>
+            <th>Status</th>
+            <th>Slots</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for trek in recent_treks %}
+          <tr>
+            <td>
+              <div class="fw-600">{{ trek.name }}</div>
+              <div class="text-muted" style="font-size:.78rem;">{{ trek.location }}</div>
+            </td>
+            <td>
+              <span class="badge badge-{{ trek.status.lower() }}">{{ trek.status }}</span>
+            </td>
+            <td>{{ trek.available_slots }}/{{ trek.total_slots }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="text-muted" style="text-align:center; padding:1.5rem;">No treks yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Recent Bookings -->
+  <div class="card" style="flex:1; min-width:320px;">
+    <div class="card-header">
+      <h2 class="card-title"> Recent Bookings</h2>
+      <a href="{{ url_for('admin.bookings') }}" class="btn btn-secondary btn-sm">View All</a>
+    </div>
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>User</th>
+            <th>Trek</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in recent_bookings %}
+          <tr>
+            <td>{{ b.user.full_name }}</td>
+            <td style="max-width:140px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ b.trek.name }}</td>
+            <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="3" class="text-muted" style="text-align:center; padding:1.5rem;">No bookings yet</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

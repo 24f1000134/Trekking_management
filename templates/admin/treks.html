@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+{% block title %}Manage Treks - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Treks</h1>
+  </div>
+  <a href="{{ url_for('admin.add_trek') }}" class="btn btn-primary">
+    Add Trek
+  </a>
+</div>
+
+<!-- Search -->
+<form method="GET" class="search-bar" style="margin-bottom:1.25rem;">
+  <input type="text" name="q" class="form-control" placeholder="Search by name, location, or ID..." value="{{ q }}">
+  <button type="submit" class="btn btn-primary">Search</button>
+  {% if q %}<a href="{{ url_for('admin.treks') }}" class="btn btn-secondary">Clear</a>{% endif %}
+</form>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Location</th>
+          <th>Elevation(Ft)</th>
+          <th>Difficulty</th>
+          <th>Dates</th>
+          <th>Slots</th>
+          <th>Status</th>
+          <th>Staff</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for trek in treks %}
+        <tr>
+          <td class="text-muted">{{ trek.id }}</td>
+          <td>
+            <div class="fw-600">{{ trek.name }}</div>
+            <div class="text-muted" style="font-size:.78rem;">{{ trek.duration_days }} days , &#8377;{{
+              "%.0f"|format(trek.price) }}</div>
+          </td>
+          <td>{{ trek.location }}</td>
+          <td>{{ trek.altitude }}</td>
+          <td><span class="badge badge-{{ trek.difficulty.lower().replace(' ', '-') }}">{{ trek.difficulty }}</span>
+          </td>
+          <td style="font-size:.82rem;">
+            {{ trek.start_date.strftime('%d %b') }} - {{ trek.end_date.strftime('%d %b %Y') }}
+          </td>
+          <td>
+            <span class="fw-600">{{ trek.available_slots }}</span>
+            <span class="text-muted">/{{ trek.total_slots }}</span>
+          </td>
+          <td><span class="badge badge-{{ trek.status.lower() }}">{{ trek.status }}</span></td>
+          <td style="font-size:.82rem;">
+            {% if trek.assigned_staff %}
+            {{ trek.assigned_staff.full_name }}
+            {% else %}
+            <span class="text-muted">Unassigned</span>
+            {% endif %}
+          </td>
+          <td>
+            <div class="d-flex gap-2">
+              <a href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}" class="btn btn-primary btn-sm">
+                Edit
+              </a>
+              <form method="POST" action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}" style="display:inline;">
+                <button type="submit" class="btn btn-danger btn-sm"
+                  onclick="return confirm('Delete trek and all its bookings?')">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="10">
+            <div class="empty-state">
+              <p>No treks found. <a href="{{ url_for('admin.add_trek') }}">Create one</a></p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
