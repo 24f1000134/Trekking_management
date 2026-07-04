@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+{% block title %}All Bookings - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">All Bookings</h1>
+    <p class="page-subtitle">Complete booking history across all treks</p>
+  </div>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Trekker</th>
+          <th>Trek</th>
+          <th>Location</th>
+          <th>Booked On</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td class="text-muted">{{ b.id }}</td>
+          <td>
+            <div class="fw-600">{{ b.user.full_name }}</div>
+            <div class="text-muted" style="font-size:.78rem;">{{ b.user.username }}</div>
+          </td>
+          <td>
+            <div class="fw-600">{{ b.trek.name }}</div>
+          </td>
+          <td>{{ b.trek.location }}</td>
+          <td style="font-size:.82rem;">{{ b.booking_date.strftime('%d %b %Y, %H:%M') }}</td>
+          <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="6">
+            <div class="empty-state">
+              <p>No bookings yet.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

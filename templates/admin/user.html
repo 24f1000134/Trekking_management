@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Trekkers - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Manage Trekkers</h1>
+  </div>
+</div>
+
+<!-- Search -->
+<form method="GET" class="search-bar">
+  <input type="text" name="q" class="form-control" placeholder="Search by name, username, email, or ID..." value="{{ q }}">
+  <button type="submit" class="btn btn-primary"> Search</button>
+  {% if q %}<a href="{{ url_for('admin.users') }}" class="btn btn-secondary">Clear</a>{% endif %}
+</form>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Bookings</th>
+          <th>Joined</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td class="text-muted">#{{ u.id }}</td>
+          <td class="fw-600">{{ u.full_name }}</td>
+          <td>{{ u.username }}</td>
+          <td>{{ u.email }}</td>
+          <td>{{ u.phone or '—' }}</td>
+          <td>{{ u.bookings|length }}</td>
+          <td style="font-size:.82rem;">{{ u.created_at.strftime('%d %b %Y') }}</td>
+          <td>
+            {% if u.is_blacklisted %}
+              <span class="badge badge-blacklisted">Blacklisted</span>
+            {% else %}
+              <span class="badge badge-active">Active</span>
+            {% endif %}
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('admin.blacklist_user', user_id=u.id) }}" style="display:inline;">
+              <button type="submit" id="blacklist-user-{{ u.id }}" class="btn btn-{{ 'secondary' if u.is_blacklisted else 'danger' }} btn-sm">
+                {% if u.is_blacklisted %}
+                  Reinstate
+                {% else %}
+                  Blacklist
+                {% endif %}
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="9">
+            <div class="empty-state">
+              <p>No trekkers found.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
