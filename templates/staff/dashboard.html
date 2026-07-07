@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Staff Dashboard - TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Staff Dashboard</h1>
+    <p class="page-subtitle">Welcome, {{ current_user.full_name }}!</p>
+  </div>
+</div>
+
+{% if trek_data %}
+<div class="trek-grid">
+  {% for item in trek_data %}
+  <div class="trek-card">
+    <div class="trek-card-banner">
+    </div>
+    <div class="trek-card-body">
+      <div class="trek-card-title">{{ item.trek.name }}</div>
+      <div class="trek-meta">
+        <span> {{ item.trek.location }}</span>
+        <span> {{ item.trek.start_date.strftime('%d %b') }} - {{ item.trek.end_date.strftime('%d %b %Y') }}</span>
+        <span> {{ item.booked_count }} registered participants</span>
+        <span> {{ item.trek.available_slots }} slots remaining</span>
+      </div>
+      <span class="badge badge-{{ item.trek.status.lower() }}">{{ item.trek.status }}</span>
+    </div>
+    <div class="trek-card-footer">
+      <a href="{{ url_for('staff.trek_detail', trek_id=item.trek.id) }}" class="btn btn-primary btn-sm">
+         Manage
+      </a>
+      <a href="{{ url_for('staff.participants', trek_id=item.trek.id) }}" class="btn btn-outline btn-sm">
+         Participants
+      </a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% else %}
+<div class="card">
+  <div class="card-body">
+    <div class="empty-state">
+      <p>You have no assigned treks yet. Contact admin to get treks assigned.</p>
+    </div>
+  </div>
+</div>
+{% endif %}
+{% endblock %}
