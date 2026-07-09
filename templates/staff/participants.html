@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Participants - {{ trek.name }}{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Participants</h1>
+    <p class="page-subtitle">{{ trek.name }}-{{ trek.location }}</p>
+  </div>
+  <div class="d-flex gap-2 align-center">
+    <span class="badge badge-{{ trek.status.lower() }}">{{ trek.status }}</span>
+    <a href="{{ url_for('staff.trek_detail', trek_id=trek.id) }}" class="btn btn-secondary btn-sm">
+        Back
+    </a>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-header">
+    <h2 class="card-title">  Registered Participants ({{ bookings|length }})</h2>
+  </div>
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Trekker</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Booked On</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td class="text-muted">{{ b.id }}</td>
+          <td class="fw-600">{{ b.user.full_name }}</td>
+          <td>{{ b.user.username }}</td>
+          <td>{{ b.user.email }}</td>
+          <td>{{ b.user.phone or '—' }}</td>
+          <td style="font-size:.82rem;">{{ b.booking_date.strftime('%d %b %Y') }}</td>
+          <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <p>No participants registered yet.</p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
