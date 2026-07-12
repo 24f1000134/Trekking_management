@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard — TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">Dashboard</h1>
+    <p class="page-subtitle page-subtitle-blue">Hello, {{ current_user.full_name }}. Ready for your next adventure?</p>
+  </div>
+  <a href="{{ url_for('user.treks') }}" class="btn btn-primary">
+    Explore Treks
+  </a>
+</div>
+
+<!-- Stats -->
+<div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); margin-bottom:1.75rem;">
+  <div class="stat-card">
+    <div>
+      <div class="stat-value">{{ total_booked }}</div>
+      <div class="stat-label">Active Bookings</div>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div>
+      <div class="stat-value">{{ total_history }}</div>
+      <div class="stat-label">Total Trips</div>
+    </div>
+  </div>
+</div>
+
+<div class="d-flex flex-wrap gap-3">
+  <!-- Open Treks -->
+  <div style="flex:2; min-width:300px;">
+    <div class="section-title-row mb-3">
+      <h2 class="page-title" style="font-size:1.1rem;">Available Treks</h2>
+      <a href="{{ url_for('user.treks') }}" class="btn btn-secondary btn-sm">See All</a>
+    </div>
+    {% if open_treks %}
+    <div class="trek-grid" style="grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));">
+      {% for trek in open_treks %}
+      <div class="trek-card">
+        <div class="trek-card-banner">
+        </div>
+        <div class="trek-card-body">
+          <div class="trek-card-title">{{ trek.name }}</div>
+          <div class="trek-meta">
+            <span> {{ trek.location }}</span>
+            <span> {{ trek.start_date.strftime('%d %b %Y') }}</span>
+          </div>
+          <div class="d-flex gap-2">
+            <span class="badge badge-{{ trek.difficulty.lower().replace(' ', '-') }}">{{ trek.difficulty }}</span>
+            <span class="badge badge-open">{{ trek.available_slots }} slots left</span>
+          </div>
+        </div>
+        <div class="trek-card-footer">
+          <span class="fw-600" style="color:var(--primary);">&#8377;{{ "%.0f"|format(trek.price) }}</span>
+          <a href="{{ url_for('user.trek_detail', trek_id=trek.id) }}" class="btn btn-primary btn-sm">
+            View
+          </a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="card">
+      <div class="card-body">
+        <div class="empty-state">
+          <p>No open treks available right now. Check back soon.</p>
+        </div>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+  <!-- Recent Bookings -->
+  <div style="flex:1; min-width:260px;">
+    <div class="d-flex align-center mb-3">
+      <h2 class="page-title" style="font-size:1.1rem;">Recent Bookings</h2>
+      <a href="{{ url_for('user.bookings') }}" class="btn btn-secondary btn-sm ms-auto">All</a>
+    </div>
+    <div class="card">
+      <div class="table-wrap">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Trek</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for b in my_bookings %}
+            <tr>
+              <td>
+                <div class="fw-500" style="font-size:.85rem;">{{ b.trek.name }}</div>
+                <div class="text-muted" style="font-size:.75rem;">{{ b.booking_date.strftime('%d %b %Y') }}</div>
+              </td>
+              <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="2" style="text-align:center; padding:1.5rem;" class="text-muted">No bookings yet</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
