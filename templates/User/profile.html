@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% block title %}My Profile — TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">My Profile</h1>
+    <p class="page-subtitle">Manage your account details</p>
+  </div>
+</div>
+
+<div class="card" style="max-width:520px;">
+  <div class="card-header">
+    <h2 class="card-title d-flex align-items-center">
+      <div class="user-avatar me-2" style="width:36px;height:36px;font-size:.95rem;">{{
+        current_user.full_name[0].upper() }}</div>
+      <span>{{ current_user.full_name }}</span>
+    </h2>
+    <span class="badge badge-active">Active</span>
+  </div>
+  <div class="card-body">
+    <form method="POST" action="{{ url_for('user.profile') }}">
+      <div class="form-group">
+        <label class="form-label">Full Name</label>
+        <input type="text" name="full_name" id="full_name" class="form-control" value="{{ current_user.full_name }}"
+          required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Experience</label>
+        <select name="Experience" id="experience" class="form-select" required>
+          {% for level in ['Beginner', 'Intermediate', 'Expert'] %}
+          <option value="{{ level }}">{{ level }}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Username</label>
+        <input type="text" class="form-control" value="{{ current_user.username }}" disabled
+          style="background:var(--gray-100); cursor:not-allowed;">
+        <p class="text-muted" style="font-size:.78rem; margin-top:.25rem;">Username cannot be changed.</p>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" name="email" id="email" class="form-control" value="{{ current_user.email }}" required>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone</label>
+        <input type="text" name="phone" id="phone" class="form-control" value="{{ current_user.phone or '' }}"
+          placeholder="Contact number">
+      </div>
+
+      <hr style="border-color:var(--gray-300); margin:1.25rem 0;">
+      <p style="font-size:.85rem; font-weight:600; color:var(--gray-700); margin-bottom:.75rem;">Change Password</p>
+      <p class="text-muted" style="font-size:.8rem; margin-bottom:.75rem;">Leave blank to keep current password.</p>
+
+      <div class="form-group">
+        <label class="form-label">New Password</label>
+        <input type="password" name="password" id="new-password" class="form-control" placeholder="Min 6 characters">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Confirm New Password</label>
+        <input type="password" name="confirm_password" id="confirm-password" class="form-control"
+          placeholder="Repeat new password">
+      </div>
+
+      <button type="submit" id="save-profile-btn" class="btn btn-primary">
+        Save Changes
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}

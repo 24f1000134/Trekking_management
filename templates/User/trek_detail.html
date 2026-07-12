@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block title %}{{ trek.name }} — TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">{{ trek.name }}</h1>
+    <div class="info-row" style="margin-top:.35rem;">
+      <span>{{ trek.location }}</span>
+      <span>{{ trek.duration_days }} days</span>
+      <span class="badge badge-{{ trek.difficulty.lower().replace(' ', '-') }}">{{ trek.difficulty }}</span>
+      <span class="badge badge-{{ trek.status.lower() }}">{{ trek.status }}</span>
+    </div>
+  </div>
+  <a href="{{ url_for('user.treks') }}" class="btn btn-secondary">
+    Back
+  </a>
+</div>
+
+<div class="d-flex flex-wrap gap-3">
+
+  <!-- Details -->
+  <div class="card" style="flex:2; min-width:280px;">
+    <div class="card-header">
+      <h2 class="card-title"> Trek Details</h2>
+    </div>
+    <div class="card-body">
+      <table style="width:100%; font-size:.875rem; border-collapse:collapse;">
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500); width:40%;">Location</td>
+          <td class="fw-500">{{ trek.location }}</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">Start Date</td>
+          <td class="fw-500">{{ trek.start_date.strftime('%d %B %Y') }}</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">End Date</td>
+          <td class="fw-500">{{ trek.end_date.strftime('%d %B %Y') }}</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">Duration</td>
+          <td class="fw-500">{{ trek.duration_days }} days</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">Difficulty</td>
+          <td><span class="badge badge-{{ trek.difficulty.lower().replace(' ', '-') }}">{{ trek.difficulty }}</span>
+          </td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">Slots Available</td>
+          <td class="fw-500">{{ slots_left }} / {{ trek.total_slots }}</td>
+        </tr>
+        <tr style="border-bottom:1px solid var(--gray-300);">
+          <td style="padding:.6rem 0; color:var(--gray-500);">Price</td>
+          <td class="fw-600" style="color:var(--primary); font-size:1.1rem;">&#8377;{{ "%.0f"|format(trek.price) }}</td>
+        </tr>
+        {% if trek.assigned_staff %}
+        <tr>
+          <td style="padding:.6rem 0; color:var(--gray-500);">Guide</td>
+          <td class="fw-500">{{ trek.assigned_staff.full_name }}</td>
+        </tr>
+        {% endif %}
+      </table>
+
+      {% if trek.description %}
+      <div style="margin-top:1rem; padding-top:1rem; border-top:1px solid var(--gray-300);">
+        <p style="font-size:.85rem; font-weight:600; color:var(--gray-700); margin-bottom:.35rem;">About this Trek</p>
+        <p style="font-size:.875rem; color:var(--gray-700); line-height:1.6; margin:0;">{{ trek.description }}</p>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Booking -->
+  <div style="flex:1; min-width:240px;">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title"> Book This Trek</h2>
+      </div>
+      <div class="card-body">
+        {% if trek.status != 'Open' %}
+        <div class="alert alert-warning">
+          <i class="bi bi-exclamation-triangle-fill"></i>
+          This trek is not open for booking (Status: {{ trek.status }}).
+        </div>
+        {% elif slots_left <= 0 %} <div class="alert alert-danger">
+          <i class="bi bi-x-circle-fill"></i>
+          No slots available. This trek is full.
+      </div>
+      {% elif already_booked %}
+      <div class="alert alert-success">
+        <i class="bi bi-check-circle-fill"></i>
+        You have already booked this trek.
+      </div>
+      <a href="{{ url_for('user.bookings') }}" class="btn btn-outline w-100">
+        View My Bookings
+      </a>
+      {% else %}
+      <p style="font-size:.85rem; color:var(--gray-500); margin-bottom:1rem;">
+        <strong>{{ slots_left }}</strong> slot{{ 's' if slots_left != 1 else '' }} remaining.
+      </p>
+      <form method="POST" action="{{ url_for('user.book_trek', trek_id=trek.id) }}">
+        <div class="form-group">
+          <label class="form-label">Notes (optional)</label>
+          <textarea name="notes" id="booking-notes" class="form-control"
+            placeholder="Any special requirements..."></textarea>
+        </div>
+        <button type="submit" id="book-btn" class="btn btn-primary w-100">
+          Book Now
+        </button>
+      </form>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+</div>
+{% endblock %}

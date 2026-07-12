@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block title %}My Bookings — TrekTheHills{% endblock %}
+
+{% block sidebar %}{% include '_sidebar.html' %}{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <div>
+    <h1 class="page-title">My Bookings</h1>
+    <p class="page-subtitle">Your complete trekking history</p>
+  </div>
+  <a href="{{ url_for('user.treks') }}" class="btn btn-primary">
+    Book More
+  </a>
+</div>
+
+<div class="card">
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Trek</th>
+          <th>Location</th>
+          <th>Dates</th>
+          <th>Booked On</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in bookings %}
+        <tr>
+          <td class="text-muted">{{ b.id }}</td>
+          <td>
+            <div class="fw-600">{{ b.trek.name }}</div>
+            <span class="badge badge-{{ b.trek.difficulty.lower().replace(' ', '-') }}">{{ b.trek.difficulty }}</span>
+          </td>
+          <td>{{ b.trek.location }}</td>
+          <td style="font-size:.82rem; white-space:nowrap;">
+            {{ b.trek.start_date.strftime('%d %b') }} - {{ b.trek.end_date.strftime('%d %b %Y') }}
+          </td>
+          <td style="font-size:.82rem;">{{ b.booking_date.strftime('%d %b %Y') }}</td>
+          <td><span class="badge badge-{{ b.status.lower() }}">{{ b.status }}</span></td>
+          <td>
+            {% if b.status == 'Booked' %}
+            <form method="POST" action="{{ url_for('user.cancel_booking', booking_id=b.id) }}" style="display:inline;">
+              <button type="submit" id="cancel-{{ b.id }}" class="btn btn-danger btn-sm"
+                onclick="return confirm('Cancel this booking?')">
+                Cancel
+              </button>
+            </form>
+            {% else %}
+            <span class="text-muted" style="font-size:.8rem;">-</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7">
+            <div class="empty-state">
+              <p>No bookings yet. <a href="{{ url_for('user.treks') }}">Browse available treks</a></p>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
