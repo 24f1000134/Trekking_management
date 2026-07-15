@@ -56,5 +56,5 @@ def load_user(user_id):
 app = create_app()
 
 if __name__ == '__main__':
-    print('Running TrekTheHills...')
+    print('Running TrekTheHills..')
     app.run(host='127.0.0.1', port=5000, debug=True, use_reloader=False)
